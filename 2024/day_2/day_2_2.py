@@ -1,20 +1,41 @@
 safe = 0
 
-def check(line: list[int], fails: int, index: int, rising: bool) -> bool:
-    if index == len(line):
-        return True
-
-    if index == 1:
-        if line[0] == line[1]:
-            pass
-        else:
-            return check(line, fails, index + 1, line[0] )
-
 with open("day_2.txt") as file:
-    for line in file:
-        line = line.split(" ")
-        line = [int(num) for num in line]
+    for main_line in file:
+        main_line = main_line.split(" ")
 
-        retrieve = check(line, 1, 1, True)
+        for i in range(len(main_line)):
+            line = [int(x) for j, x in enumerate(main_line) if j != i]
 
+            is_safe = True
+            rise_dec_set = False
+            rising = True
+            prev_level = int(line.pop())
 
+            while len(line) > 0:
+                this_level = int(line.pop())
+
+                if not rise_dec_set:
+                    if not (0 < abs(this_level - prev_level) < 4):
+                        is_safe = False
+                        break
+
+                    if this_level < prev_level:
+                        rising = False
+
+                    rise_dec_set = True
+
+                else:
+                    if (not (0 < abs(this_level - prev_level) < 4)) or \
+                    (rising and this_level < prev_level) or \
+                    (not rising and this_level > prev_level):
+                        is_safe = False
+                        break
+
+                prev_level = this_level
+
+            if is_safe:
+                safe += 1
+                break
+
+print(safe)
