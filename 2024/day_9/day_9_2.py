@@ -6,6 +6,7 @@ def reorder(divided: Divided) -> Divided:
     curr_divided = divided.copy()
 
     while len(curr_divided) > 1:
+        print(len(curr_divided))
         amount, is_num, mult = curr_divided.pop()
 
         if not is_num:
@@ -42,11 +43,14 @@ def reorder(divided: Divided) -> Divided:
             curr_divided = start
             start = []
 
+    if len(curr_divided) > 0:
+        end.extend(curr_divided)
+
     end.reverse()
     return end
 
 
-with open("day_9_test.txt") as f:
+with open("day_9.txt") as f:
     line = f.readline()
     divided: Divided = []
     multiplier = 0
@@ -61,16 +65,14 @@ with open("day_9_test.txt") as f:
 
 
     reor = reorder(divided)
-    print(reor)
+    multiplier = 0
+    result = 0
 
-    stringify = ''
-    for amount, is_num, mult in reor:
+    for amount, is_num, index in reor:
         for _ in range(amount):
             if is_num:
-                stringify += str(mult)
+                result += index * multiplier
 
-            else:
-                stringify += '.'
+            multiplier += 1
 
-    print(stringify)
-
+    print(result)
