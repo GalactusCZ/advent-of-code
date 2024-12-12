@@ -17,15 +17,61 @@ def this_block(char: str, pos: tuple[int, int], plot_map: list[str], used: set[t
     return block
 
 
-def count_corners(pos: tuple[int, int], char: str, start: tuple[int, int], direction: int, check: int, map_plot: list[str]) -> int:
-    dirs = [(x. y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
-    dx, dy = dirs[check]
-
-    if not is_valid(dirs[check], len(map_plot), len(map_plot[0])) or map_plot[dy][dx] != char:
+def count_sides(block: set[tuple[int, int]]) -> int:
+    sides = 0
+    ys = [y for _, y in block]
+    xs = [x for x, _ in block]
         
+    for y in range(min(ys), max(ys) + 1):
+        prev_top = False
+        prev_bot = False
+        for x in range(min(xs), max(xs) + 1):
+            if (x, y) in block:
+                if (x, y - 1) not in block:
+                    if not prev_top:
+                        sides += 1
+                        prev_top = True
+                else:
+                    prev_top = False
+ 
+                if (x, y + 1) not in block:
+                    if not prev_bot:
+                        sides += 1
+                        prev_bot = True
+                else:
+                    prev_bot = False
+                    
+            else:
+                prev_top = False
+                prev_bot = False
+        
+    for x in range(min(xs), max(xs) + 1):
+        prev_l = False
+        prev_r = False
+        for y in range(min(ys), max(ys) + 1):
+            if (x, y) in block:
+                if (x - 1, y) not in block:
+                    if not prev_l:
+                        sides += 1
+                        prev_l = True
+                else:
+                    prev_l = False
+ 
+                if (x + 1, y) not in block:
+                    if not prev_r:
+                        sides += 1
+                        prev_r = True
+                else:
+                    prev_r = False
+                    
+            else:
+                 prev_l = False
+                 prev_r = False
+             
+    return sides
 
 
-with open("day_12_test.txt") as f:
+with open("day_12.txt") as f:
     plot_map: list[str] = []
     starts: dict[tuple[int, int], str] = {}
     prev_char = '.'
@@ -44,6 +90,9 @@ with open("day_12_test.txt") as f:
 
     for start in starts.keys():
         if start not in used:
-            print(start, this_block(starts[start], start, plot_map, used))
+            block = this_block(starts[start], start, plot_map, used)
+            sides = count_sides(block)
+            print(start, len(block), sides)
+            result += len(block) * sides
 
     print(result)
