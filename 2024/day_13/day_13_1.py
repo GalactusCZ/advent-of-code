@@ -3,19 +3,11 @@ def check_machines(machine: dict[str, int]) -> int:
     a_x, a_y = machine['A']
     b_x, b_y = machine['B']
     b = 0
-    
-    while b * b_x <= p_x and b * b_y <= p_y:
-        if p_x == b_x * b and p_y == b_y * b:
-            return b
 
-        a = 0
-        while a * a_x <= p_x and a * a_y <= p_y:
-            if p_x == a_x * a + b_x * b and p_y == a_y * a + b_y * b:
+    for b in range(min(p_x // b_x, p_y // b_y) + 1):
+        for a in range(min(p_x // a_x, p_y // a_y) + 1):
+            if b * b_x + a * a_x == p_x and b * b_y + a * a_y == p_y:
                 return b + a * 3
-
-            a += 1
-
-        b += 1
 
     return 0
 
@@ -36,14 +28,15 @@ with open("day_13.txt") as f:
             line = line[1].split(', ')
             
             curr_m['P'] = (int(line[0].split('=')[1]), int(line[1].split('=')[1]))
-            
+
         else:
             spliter = line.replace('Button ', '')
             spliter = spliter.split(': ')
             line = spliter[1].split(', ')
-            
+
             curr_m[spliter[0]] = (int(line[0].split('+')[1]), int(line[1].split('+')[1]))
 
+    machines.append(curr_m)
     result = 0
 
     for machine in machines:
