@@ -19,6 +19,20 @@ class Robots():
                 y %= self.height
                 
             self.robots[i] = (x, y, m_x, m_y)
+
+    def draw(self) -> None:
+        coords = [(x, y) for x, y, _, _ in self.robots]
+
+        for y in range(self.height):
+            new_line = ''
+            for x in range(self.width):
+                if (x, y) in coords:
+                    new_line += '1'
+
+                else:
+                    new_line += ' '
+
+            print(new_line)
         
     def count_quadrants(self) -> int:
         results = [0, 0, 0, 0]
@@ -58,5 +72,14 @@ with open("day_14.txt") as f:
            robots.append((int(pos[0]), int(pos[1]), int(vec[0]), int(vec[1])))
        
 robots_o = Robots(103, 101, robots)
-robots_o.move(100)
-print(robots_o.count_quadrants())
+
+# 1286
+# 2757
+# robots_o.move(85000)
+for i in range(0, 100000000000, 1):
+    print(i + 1)
+    robots_o.move(1)
+    nineteen = set([(x, y) for x, y, _, _ in robots_o.robots if y == 19])
+    if len(nineteen) > 10:
+        robots_o.draw()
+    print(' ')
